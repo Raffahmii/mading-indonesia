@@ -1,0 +1,311 @@
+/*
+|--------------------------------------------------------------------------
+| MADING INDONESIA — Theme System
+|--------------------------------------------------------------------------
+*/
+
+:root {
+    --brand-primary: #8E1EA2;
+    --brand-secondary: #C654C3;
+    --brand-accent: #ED96D7;
+    --brand-soft: #FFC0DE;
+    --brand-50: #FDF2FC;
+    --brand-100: #FCE7F9;
+    --brand-600: #A82BA8;
+    --brand-700: #8E1EA2;
+    --brand-800: #721A82;
+
+    --ink: #241A26;
+    --ink-muted: #6F6571;
+    --ink-soft: #A69EAA;
+    --surface: #FFFFFF;
+    --surface-muted: #FAF8FA;
+    --surface-border: #E9E2EA;
+
+    --success: #22C55E;
+    --warning: #F59E0B;
+    --danger: #EF4444;
+    --info: #3B82F6;
+
+    --university-primary: var(--brand-primary);
+    --university-secondary: var(--brand-secondary);
+    --university-accent: var(--brand-accent);
+    --university-soft: var(--brand-soft);
+}
+
+/* ============================================================
+   GRADIENT
+   ============================================================ */
+
+.bg-brand-gradient {
+    background-image: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 50%, var(--brand-accent) 100%);
+}
+
+.bg-university-gradient {
+    background-image: linear-gradient(135deg, var(--university-primary) 0%, var(--university-secondary) 100%);
+}
+
+.text-brand-gradient {
+    background: linear-gradient(135deg, var(--brand-primary) 0%, var(--brand-secondary) 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+/* ============================================================
+   SCROLLBAR
+   ============================================================ */
+
+::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: var(--surface-muted);
+}
+
+::-webkit-scrollbar-thumb {
+    background: var(--ink-soft);
+    border-radius: 5px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: var(--ink-muted);
+}
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
+html {
+    scroll-behavior: smooth;
+    scroll-padding-top: 90px;
+}
+
+*:focus-visible {
+    outline: 2px solid var(--brand-primary);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+/* ============================================================
+   HERO BACKGROUND — pakai background.jpg + animasi
+   ============================================================ */
+
+.hero-bg {
+    position: relative;
+    overflow: hidden;
+    isolation: isolate;
+    min-height: 93vh;
+    display: flex;
+    align-items: center;
+}
+
+/* Layer 1: Gambar background dengan animasi Ken Burns */
+.hero-bg__image {
+    position: absolute;
+    top: -5%;
+    left: -5%;
+    width: 110%;
+    height: 110%;
+    background-image: url('/assets/background.jpg');
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    z-index: 0;
+    animation: ken-burns 25s ease-in-out infinite alternate;
+    will-change: transform;
+}
+
+/* Layer 2: Overlay gradient pink-purple */
+.hero-bg__overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(
+        135deg,
+        rgba(142, 30, 162, 0.88) 0%,
+        rgba(198, 84, 195, 0.78) 50%,
+        rgba(237, 150, 215, 0.68) 100%
+    );
+    z-index: 1;
+}
+
+/* Layer 3: Vignette + glow yang berdenyut */
+.hero-bg__overlay::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        radial-gradient(circle at 20% 30%, rgba(255, 255, 255, 0.18) 0%, transparent 45%),
+        radial-gradient(circle at 80% 70%, rgba(255, 255, 255, 0.12) 0%, transparent 45%);
+    animation: pulse-glow 8s ease-in-out infinite;
+}
+
+/* Layer 4: Blob organik */
+.hero-bg__blobs {
+    position: absolute;
+    inset: 0;
+    z-index: 2;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+/* Konten di atas semua layer */
+.hero-bg__content {
+    position: relative;
+    z-index: 3;
+    width: 100%;
+}
+
+@keyframes ken-burns {
+    0%   { transform: scale(1) translate(0, 0); }
+    33%  { transform: scale(1.08) translate(-1.5%, -1%); }
+    66%  { transform: scale(1.12) translate(1.5%, 1%); }
+    100% { transform: scale(1.05) translate(-1%, 2%); }
+}
+
+@keyframes pulse-glow {
+    0%, 100% { opacity: 0.5; }
+    50%      { opacity: 0.9; }
+}
+
+/* ============================================================
+   BLOB
+   ============================================================ */
+
+.blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    pointer-events: none;
+}
+
+.blob-brand {
+    background: radial-gradient(circle, var(--brand-accent) 0%, transparent 70%);
+}
+
+@keyframes float-slow {
+    0%, 100% { transform: translate(0, 0) scale(1); }
+    33%      { transform: translate(40px, -30px) scale(1.08); }
+    66%      { transform: translate(-30px, 30px) scale(0.95); }
+}
+
+.animate-blob {
+    animation: float-slow 18s ease-in-out infinite;
+}
+
+.animate-blob-delay-2 {
+    animation: float-slow 18s ease-in-out infinite;
+    animation-delay: -6s;
+}
+
+.animate-blob-delay-4 {
+    animation: float-slow 18s ease-in-out infinite;
+    animation-delay: -12s;
+}
+
+/* ============================================================
+   SCROLL REVEAL
+   ============================================================ */
+
+.reveal {
+    opacity: 0;
+    transform: translateY(40px);
+    transition: opacity 0.8s cubic-bezier(0.16, 1, 0.3, 1),
+                transform 0.8s cubic-bezier(0.16, 1, 0.3, 1);
+    will-change: opacity, transform;
+}
+
+.reveal.is-visible {
+    opacity: 1;
+    transform: translateY(0);
+}
+
+/* Varian */
+.reveal-left  { transform: translateX(-50px); }
+.reveal-right { transform: translateX(50px); }
+.reveal-scale { transform: scale(0.92); }
+
+.reveal-left.is-visible,
+.reveal-right.is-visible,
+.reveal-scale.is-visible {
+    transform: translate(0, 0) scale(1);
+}
+
+/* Delay */
+.reveal-d1 { transition-delay: 0.1s; }
+.reveal-d2 { transition-delay: 0.2s; }
+.reveal-d3 { transition-delay: 0.3s; }
+.reveal-d4 { transition-delay: 0.4s; }
+.reveal-d5 { transition-delay: 0.5s; }
+.reveal-d6 { transition-delay: 0.6s; }
+
+/* ============================================================
+   FADE UP (untuk hero text)
+   ============================================================ */
+
+@keyframes fade-up {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+.animate-fade-up {
+    animation: fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+    opacity: 0;
+}
+
+.animate-fade-up-d1 { animation: fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.15s forwards; opacity: 0; }
+.animate-fade-up-d2 { animation: fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.30s forwards; opacity: 0; }
+.animate-fade-up-d3 { animation: fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.45s forwards; opacity: 0; }
+.animate-fade-up-d4 { animation: fade-up 0.9s cubic-bezier(0.16, 1, 0.3, 1) 0.60s forwards; opacity: 0; }
+
+/* ============================================================
+   LINE CLAMP
+   ============================================================ */
+
+.line-clamp-2 {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.line-clamp-3 {
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+/* ============================================================
+   GLASS
+   ============================================================ */
+
+.glass {
+    background: rgba(255, 255, 255, 0.12);
+    backdrop-filter: blur(14px);
+    -webkit-backdrop-filter: blur(14px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+}
+
+/* ============================================================
+   REDUCED MOTION
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-bg__image,
+    .animate-blob,
+    .reveal,
+    .animate-fade-up,
+    .animate-fade-up-d1,
+    .animate-fade-up-d2,
+    .animate-fade-up-d3,
+    .animate-fade-up-d4 {
+        animation: none !important;
+        transition: none !important;
+        opacity: 1 !important;
+        transform: none !important;
+    }
+}
+

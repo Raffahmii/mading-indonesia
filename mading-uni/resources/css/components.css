@@ -1,0 +1,477 @@
+/*
+|--------------------------------------------------------------------------
+| MADING INDONESIA — Reusable Components
+|--------------------------------------------------------------------------
+*/
+
+/* ============================================================
+   BUTTONS
+   ============================================================ */
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1.25rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    border-radius: 0.75rem;
+    border: 1px solid transparent;
+    cursor: pointer;
+    text-decoration: none;
+    transition: all 0.2s ease;
+    white-space: nowrap;
+}
+
+.btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.btn-primary {
+    background-color: var(--brand-primary);
+    color: white;
+    box-shadow: 0 4px 14px rgba(142, 30, 162, 0.25);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background-color: var(--brand-600);
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(142, 30, 162, 0.35);
+}
+
+.btn-university {
+    background-color: var(--university-primary);
+    color: white;
+}
+
+.btn-university:hover:not(:disabled) {
+    filter: brightness(0.9);
+    transform: translateY(-1px);
+}
+
+.btn-outline {
+    background-color: transparent;
+    color: var(--ink);
+    border-color: var(--surface-border);
+}
+
+.btn-outline:hover:not(:disabled) {
+    background-color: var(--surface-muted);
+    border-color: var(--ink-soft);
+}
+
+.btn-ghost {
+    background-color: transparent;
+    color: var(--ink-muted);
+}
+
+.btn-ghost:hover:not(:disabled) {
+    background-color: var(--surface-muted);
+    color: var(--ink);
+}
+
+.btn-danger {
+    background-color: var(--danger);
+    color: white;
+}
+
+.btn-danger:hover:not(:disabled) {
+    filter: brightness(0.9);
+}
+
+.btn-white {
+    background-color: white;
+    color: var(--brand-700);
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.1);
+}
+
+.btn-white:hover:not(:disabled) {
+    transform: translateY(-1px);
+    box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn-sm {
+    padding: 0.375rem 0.75rem;
+    font-size: 0.75rem;
+}
+
+.btn-lg {
+    padding: 0.875rem 1.75rem;
+    font-size: 1rem;
+}
+
+/* ============================================================
+   NAV LINK (SMOOTH SCROLL)
+   ============================================================ */
+
+.nav-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    padding: 0.5rem 0.875rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink-muted);
+    border-radius: 0.5rem;
+    text-decoration: none;
+    transition: all 0.15s;
+    cursor: pointer;
+    background: transparent;
+    border: none;
+}
+
+.nav-link:hover {
+    color: var(--brand-700);
+    background-color: var(--brand-50);
+}
+
+/* ============================================================
+   INPUTS
+   ============================================================ */
+
+.input {
+    display: block;
+    width: 100%;
+    padding: 0.625rem 0.875rem;
+    font-size: 0.875rem;
+    color: var(--ink);
+    background-color: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: 0.75rem;
+    transition: border-color 0.15s, box-shadow 0.15s;
+}
+
+.input:focus {
+    outline: none;
+    border-color: var(--brand-primary);
+    box-shadow: 0 0 0 3px color-mix(in srgb, var(--brand-primary) 15%, transparent);
+}
+
+.input::placeholder {
+    color: var(--ink-soft);
+}
+
+.label {
+    display: block;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: var(--ink);
+    margin-bottom: 0.375rem;
+}
+
+.help-text {
+    font-size: 0.75rem;
+    color: var(--ink-muted);
+    margin-top: 0.25rem;
+}
+
+/* ============================================================
+   CARDS
+   ============================================================ */
+
+.card {
+    background-color: var(--surface);
+    border: 1px solid var(--surface-border);
+    border-radius: 1rem;
+    overflow: hidden;
+    transition: transform 0.25s, box-shadow 0.25s;
+}
+
+.card-hover:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 28px -8px rgba(142, 30, 162, 0.2);
+    border-color: color-mix(in srgb, var(--brand-primary) 25%, transparent);
+}
+
+.card-body {
+    padding: 1.25rem;
+}
+
+/* ============================================================
+   BADGES
+   ============================================================ */
+
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.25rem 0.625rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    border-radius: 9999px;
+    white-space: nowrap;
+}
+
+.badge-gray    { background-color: #F3F4F6; color: #374151; }
+.badge-blue    { background-color: #DBEAFE; color: #1E40AF; }
+.badge-green   { background-color: #D1FAE5; color: #065F46; }
+.badge-yellow  { background-color: #FEF3C7; color: #92400E; }
+.badge-red     { background-color: #FEE2E2; color: #991B1B; }
+.badge-purple  { background-color: #EDE9FE; color: #5B21B6; }
+.badge-slate   { background-color: #E2E8F0; color: #334155; }
+.badge-brand   { background-color: var(--brand-50); color: var(--brand-700); }
+
+/* ============================================================
+   ALERTS
+   ============================================================ */
+
+.alert {
+    padding: 0.875rem 1rem;
+    border-radius: 0.75rem;
+    font-size: 0.875rem;
+    border: 1px solid;
+}
+
+.alert-success {
+    background-color: #D1FAE5;
+    color: #065F46;
+    border-color: #6EE7B7;
+}
+
+.alert-error {
+    background-color: #FEE2E2;
+    color: #991B1B;
+    border-color: #FCA5A5;
+}
+
+.alert-warning {
+    background-color: #FEF3C7;
+    color: #92400E;
+    border-color: #FCD34D;
+}
+
+.alert-info {
+    background-color: #DBEAFE;
+    color: #1E40AF;
+    border-color: #93C5FD;
+}
+
+/* ============================================================
+   AVATAR
+   ============================================================ */
+
+.avatar {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 9999px;
+    overflow: hidden;
+    background-color: var(--surface-muted);
+    font-weight: 600;
+    color: var(--ink-muted);
+    flex-shrink: 0;
+}
+
+.avatar-sm { width: 2rem; height: 2rem; font-size: 0.75rem; }
+.avatar-lg { width: 3rem; height: 3rem; font-size: 1rem; }
+
+/* ============================================================
+   SECTION HEADING
+   ============================================================ */
+
+.section-heading {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.section-heading h2 {
+    font-size: 1.875rem;
+    font-weight: 700;
+    color: var(--ink);
+    margin-bottom: 0.375rem;
+    line-height: 1.2;
+}
+
+@media (min-width: 1024px) {
+    .section-heading h2 {
+        font-size: 2.25rem;
+    }
+}
+
+.section-heading p {
+    color: var(--ink-muted);
+    font-size: 0.9375rem;
+}
+
+/* ============================================================
+   LINK ARROW
+   ============================================================ */
+
+.link-arrow {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    color: var(--brand-700);
+    font-weight: 600;
+    font-size: 0.875rem;
+    text-decoration: none;
+    transition: gap 0.2s;
+}
+
+.link-arrow:hover {
+    gap: 0.625rem;
+}
+/* ============================================================
+   TABLE PREMIUM
+   ============================================================ */
+
+.table-modern {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 0.875rem;
+}
+
+.table-modern thead th {
+    text-align: left;
+    padding: 1rem 1.25rem;
+    font-weight: 600;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.08em;
+    color: var(--ink-muted);
+    background-color: var(--surface-muted);
+    border-bottom: 1px solid var(--surface-border);
+    white-space: nowrap;
+}
+
+.table-modern thead th:first-child {
+    border-top-left-radius: 0.75rem;
+}
+
+.table-modern thead th:last-child {
+    border-top-right-radius: 0.75rem;
+}
+
+.table-modern tbody td {
+    padding: 1rem 1.25rem;
+    border-bottom: 1px solid var(--surface-border);
+    color: var(--ink);
+    vertical-align: middle;
+}
+
+.table-modern tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.table-modern tbody tr {
+    transition: background-color 0.15s;
+}
+
+.table-modern tbody tr:hover {
+    background-color: color-mix(in srgb, var(--brand-primary) 3%, transparent);
+}
+
+/* ============================================================
+   BUTTON ICON
+   ============================================================ */
+
+.btn-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    border-radius: 0.75rem;
+    color: var(--ink-muted);
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-icon:hover {
+    background-color: var(--surface-muted);
+    color: var(--ink);
+}
+
+.btn-icon-primary:hover {
+    background-color: var(--brand-50);
+    color: var(--brand-700);
+}
+
+.btn-icon-blue:hover {
+    background-color: #DBEAFE;
+    color: #1E40AF;
+}
+
+.btn-icon-yellow:hover {
+    background-color: #FEF3C7;
+    color: #92400E;
+}
+
+.btn-icon-danger:hover {
+    background-color: #FEE2E2;
+    color: #991B1B;
+}
+
+/* ============================================================
+   STAT CARD
+   ============================================================ */
+
+.stat-card {
+    position: relative;
+    padding: 1.5rem;
+    border-radius: 1.25rem;
+    background: white;
+    border: 1px solid var(--surface-border);
+    overflow: hidden;
+    transition: all 0.25s;
+}
+
+.stat-card::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, var(--brand-primary), var(--brand-accent));
+    opacity: 0;
+    transition: opacity 0.25s;
+}
+
+.stat-card:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px -8px rgba(142, 30, 162, 0.15);
+    border-color: color-mix(in srgb, var(--brand-primary) 20%, transparent);
+}
+
+.stat-card:hover::before {
+    opacity: 1;
+}
+
+/* ============================================================
+   PAGE HEADER
+   ============================================================ */
+
+.page-header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+}
+
+.page-header h1 {
+    font-size: 1.75rem;
+    font-weight: 800;
+    color: var(--ink);
+    line-height: 1.2;
+    letter-spacing: -0.02em;
+    margin-bottom: 0.25rem;
+}
+
+.page-header p {
+    color: var(--ink-muted);
+    font-size: 0.9375rem;
+}

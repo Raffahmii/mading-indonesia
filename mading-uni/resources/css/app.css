@@ -1,0 +1,90 @@
+@import 'tailwindcss';
+
+@plugin '@tailwindcss/forms';
+@plugin '@tailwindcss/typography';
+
+[x-cloak] {
+    display: none !important;
+}
+
+/* ============================================================
+   THEME (Tailwind v4 style)
+   ============================================================ */
+
+@theme {
+    --font-sans: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+
+    /* Brand */
+    --color-brand-50: #FDF2FC;
+    --color-brand-100: #FCE7F9;
+    --color-brand-200: #F9CEF3;
+    --color-brand-300: #F5A5E8;
+    --color-brand-400: #ED96D7;
+    --color-brand-500: #C654C3;
+    --color-brand-600: #A82BA8;
+    --color-brand-700: #8E1EA2;
+    --color-brand-800: #721A82;
+    --color-brand-900: #5C1568;
+
+    /* Neutral */
+    --color-ink: #241A26;
+    --color-ink-muted: #6F6571;
+    --color-ink-soft: #A69EAA;
+    --color-surface: #FFFFFF;
+    --color-surface-muted: #FAF8FA;
+    --color-surface-border: #E9E2EA;
+
+    /* Status */
+    --color-success: #22C55E;
+    --color-warning: #F59E0B;
+    --color-danger: #EF4444;
+    --color-info: #3B82F6;
+
+    /* Radius */
+    --radius-DEFAULT: 8px;
+    --radius-md: 10px;
+    --radius-lg: 12px;
+    --radius-xl: 16px;
+    --radius-2xl: 20px;
+    --radius-3xl: 24px;
+
+    /* Shadow */
+    --shadow-card: 0 1px 3px 0 rgba(36, 26, 38, 0.05), 0 1px 2px -1px rgba(36, 26, 38, 0.05);
+    --shadow-card-hover: 0 10px 25px -5px rgba(142, 30, 162, 0.15), 0 8px 10px -6px rgba(142, 30, 162, 0.1);
+    --shadow-dropdown: 0 4px 12px rgba(36, 26, 38, 0.08);
+}
+
+/* ============================================================
+   CSS VARIABLES (untuk theme dinamis)
+   ============================================================ */
+
+:root {
+    --brand-primary: #8E1EA2;
+    --brand-secondary: #C654C3;
+    --brand-accent: #ED96D7;
+    --brand-soft: #FFC0DE;
+
+    --university-primary: var(--brand-primary);
+    --university-secondary: var(--brand-secondary);
+    --university-accent: var(--brand-accent);
+    --university-soft: var(--brand-soft);
+}
+
+/* Import theme + components */
+@import './theme.css';
+@import './components.css';
+
+/* ============================================================
+   BASE
+   ============================================================ */
+
+html {
+    font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, sans-serif;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+body {
+    background-color: var(--color-surface-muted);
+    color: var(--color-ink);
+}

@@ -1,0 +1,2138 @@
+Siap bre. Gue nangkep konsep besarnya. Ini **bukan sekadar mading CRUD biasa**, tapi lebih tepatnya **platform mading/informasi antar-universitas di Indonesia** dengan model multi-university, role-based access, approval workflow, dan **dynamic university branding**.
+
+Sebelum masuk ERD/SQL/coding, menurut gue memang paling aman kita **kunci dulu product concept + UI/UX + business rules**. Setelah itu baru diturunkan ke database supaya dari awal nggak ada struktur yang nanti harus bongkar ulang.
+
+## 1. Konsep inti yang gue tangkap
+
+Nama sementara misalnya:
+
+> **MADING INDONESIA**
+> *Pusat Informasi dan Mading Antar-Universitas Indonesia*
+
+Platform ini menjadi tempat berbagai universitas di Indonesia untuk mempublikasikan informasi seperti:
+
+* Pengumuman universitas
+* Pendaftaran mahasiswa
+* Event kampus
+* Lomba
+* Seminar
+* Workshop
+* Beasiswa
+* Prestasi
+* Hasil lomba
+* Organisasi/kegiatan mahasiswa
+* Informasi akademik
+* Informasi non-akademik
+* Dan konten lain yang relevan
+
+Tetapi yang membedakan dari website berita biasa adalah:
+
+> **Setiap universitas memiliki ruang/tenant sendiri, admin sendiri, identitas visual sendiri, tetapi semuanya berada di dalam satu platform nasional.**
+
+Jadi misalnya:
+
+```text
+                 MADING INDONESIA
+                        │
+       ┌────────────────┼────────────────┐
+       │                │                │
+      ITB              UI               UGM
+       │                │                │
+   Admin ITB        Admin UI        Admin UGM
+       │                │                │
+     CRUD             CRUD             CRUD
+       │                │                │
+   Konten ITB       Konten UI       Konten UGM
+```
+
+Sementara anggota biasa:
+
+```text
+                 ANGGOTA
+                    │
+        ┌───────────┼───────────┐
+        ▼           ▼           ▼
+       ITB          UI         UGM
+        │           │           │
+       READ        READ        READ
+```
+
+---
+
+# 2. Tiga Role Utama
+
+## SUPER ADMIN
+
+Ini adalah pihak yang mengelola **platform secara keseluruhan**.
+
+Super Admin bukan admin sebuah universitas.
+
+Dia berada di level:
+
+```text
+PLATFORM
+   │
+   └── SUPER ADMIN
+```
+
+Super Admin dapat:
+
+* Login
+* Dashboard platform
+* CRUD universitas
+* Membuat universitas baru
+* Menentukan nama universitas
+* Menentukan logo universitas
+* Menentukan warna/brand universitas
+* Membuat akun admin universitas
+* Mengaktifkan/nonaktifkan universitas
+* Mengubah data universitas
+* Mengatur admin universitas
+* Melihat seluruh konten
+* Melakukan approval/rejection konten
+* Menghapus konten bermasalah
+* Mengelola anggota
+* Melihat statistik platform
+* Mengelola kategori
+* Mengontrol status publikasi
+* Dan fungsi administratif lainnya
+
+### Hal penting
+
+Super Admin **tidak perlu menggunakan warna universitas**.
+
+Dashboard Super Admin menggunakan **brand utama platform**.
+
+Misalnya:
+
+```text
+MADING INDONESIA
+#8E1EA2
+#C654C3
+#ED96D7
+```
+
+---
+
+# 3. ADMIN UNIVERSITAS
+
+Setiap universitas memiliki admin masing-masing.
+
+Contoh:
+
+```text
+ITB
+└── Admin ITB
+
+UI
+└── Admin UI
+
+UGM
+└── Admin UGM
+```
+
+Admin ITB **tidak boleh mengelola UI atau UGM**.
+
+Admin ITB hanya memiliki scope:
+
+```text
+university_id = ITB
+```
+
+Jadi ketika login:
+
+```text
+Admin ITB
+     │
+     ▼
+Dashboard ITB
+     │
+     ├── Konten ITB
+     ├── Event ITB
+     ├── Pengumuman ITB
+     ├── Lomba ITB
+     └── dst.
+```
+
+Dia tidak bisa:
+
+```text
+❌ CRUD konten UI
+❌ CRUD konten UGM
+❌ Edit data UI
+❌ Edit data UGM
+❌ Mengubah warna UI
+```
+
+---
+
+# 4. ANGGOTA
+
+Anggota adalah user biasa.
+
+Mereka dapat:
+
+* Register
+* Login
+* Melihat landing page
+* Melihat seluruh universitas
+* Search universitas
+* Filter universitas
+* Membuka halaman universitas
+* Membaca konten
+* Melihat event
+* Melihat pengumuman
+* Bookmark/favorite jika fitur tersebut nanti kita tambahkan
+* Mengelola profile sendiri
+
+Yang paling penting:
+
+> **Anggota tidak terikat pada satu universitas.**
+
+Mereka adalah global user.
+
+Misalnya:
+
+```text
+Raffa
+   │
+   ├── lihat ITB
+   ├── lihat UI
+   ├── lihat UGM
+   ├── lihat ITS
+   └── lihat IPB
+```
+
+---
+
+# 5. Register Hanya Untuk Anggota
+
+Ini menurut gue keputusan yang bagus.
+
+Tidak ada:
+
+```text
+Register as Admin
+Register as Super Admin
+```
+
+Yang tersedia:
+
+```text
+              REGISTER
+                  │
+                  ▼
+               ANGGOTA
+```
+
+Admin dibuat oleh Super Admin.
+
+Contohnya Super Admin membuat ITB:
+
+```text
+Create University
+
+University Name:
+Institut Teknologi Bandung
+
+Slug:
+itb
+
+Logo:
+itb.png
+
+Primary Color:
+#123456
+
+Secondary Color:
+#ABCDEF
+
+Admin Name:
+John Doe
+
+Admin Email:
+admin@itb.ac.id
+
+Temporary Password:
+********
+```
+
+Setelah submit:
+
+```text
+University ITB
+      │
+      └── Admin Account
+              │
+              ├── email
+              ├── password
+              └── university_id
+```
+
+Ini jauh lebih aman daripada membiarkan orang mendaftarkan diri sebagai admin universitas.
+
+---
+
+# 6. Konsep Approval yang Penting
+
+Nah, bagian ini menurut gue **harus kita masukkan dari awal ke arsitektur sistem.**
+
+Admin universitas **tidak langsung publish**.
+
+Flow-nya:
+
+```text
+ADMIN UNIVERSITAS
+       │
+       ▼
+Create Content
+       │
+       ▼
+     DRAFT
+       │
+       ▼
+ Submit for Approval
+       │
+       ▼
+    PENDING
+       │
+       ▼
+   SUPER ADMIN
+       │
+    ┌──┴───┐
+    ▼      ▼
+ APPROVE  REJECT
+    │      │
+    ▼      ▼
+PUBLISHED  REVISION
+```
+
+Jadi Admin ITB misalnya membuat:
+
+> "ITB Mengadakan Lomba Programming Nasional 2026"
+
+Status:
+
+```text
+PENDING
+```
+
+Super Admin mengecek.
+
+Kalau bagus:
+
+```text
+APPROVED
+     ↓
+PUBLISHED
+```
+
+Kalau ada masalah:
+
+```text
+REJECTED
+     ↓
+Admin ITB melakukan revisi
+     ↓
+Submit ulang
+```
+
+Ini memenuhi requirement:
+
+> "admin nggak bisa langsung sembarang posting."
+
+---
+
+# 7. Status Content
+
+Saya sarankan jangan hanya `published = true/false`.
+
+Gunakan status yang jelas:
+
+```text
+draft
+pending
+approved
+rejected
+published
+archived
+```
+
+Flow:
+
+```text
+DRAFT
+  │
+  ▼
+PENDING
+  │
+  ├──────────────► REJECTED
+  │                    │
+  │                    ▼
+  │                  DRAFT
+  │
+  ▼
+APPROVED
+  │
+  ▼
+PUBLISHED
+  │
+  ▼
+ARCHIVED
+```
+
+Dengan ini database dan backend Laravel akan jauh lebih rapi.
+
+---
+
+# 8. Dynamic University Branding
+
+Ini bagian yang menurut gue **paling menarik dari project lu.**
+
+Misalnya database:
+
+```text
+Universitas
+────────────────────────
+ITB
+primary_color = #123456
+
+UI
+primary_color = #0057A8
+
+UGM
+primary_color = #B71234
+
+ITS
+primary_color = #00629B
+```
+
+Ketika Admin ITB login:
+
+```text
+        ADMIN ITB
+
+┌─────────────────────────────┐
+│ ITB                         │
+│ Dashboard                   │
+│                             │
+│ primary: #123456            │
+└─────────────────────────────┘
+```
+
+Admin UI:
+
+```text
+        ADMIN UI
+
+┌─────────────────────────────┐
+│ UI                          │
+│ Dashboard                   │
+│                             │
+│ primary: #0057A8            │
+└─────────────────────────────┘
+```
+
+Jadi **satu source code**, tetapi theme berubah berdasarkan university.
+
+---
+
+# 9. Jangan Hardcode Warna di Blade
+
+Ini penting untuk implementasi Laravel nanti.
+
+Jangan:
+
+```html
+<div class="bg-blue-600">
+```
+
+untuk dashboard universitas.
+
+Karena warna harus dynamic.
+
+Konsepnya nanti:
+
+```php
+$university->primary_color
+$university->secondary_color
+```
+
+kemudian digunakan sebagai CSS variable:
+
+```css
+:root {
+    --university-primary: ...;
+    --university-secondary: ...;
+}
+```
+
+Contoh:
+
+```css
+background-color: var(--university-primary);
+```
+
+Sehingga:
+
+```text
+ITB → biru
+UI  → biru
+UGM → merah
+ITS → biru
+```
+
+tanpa membuat dashboard berbeda-beda.
+
+---
+
+# 10. Tetapi Landing Page Tetap Menggunakan Brand Utama
+
+Ini juga harus dibedakan.
+
+### Global Landing Page
+
+Gunakan:
+
+```text
+#8E1EA2
+#C654C3
+#ED96D7
+#FFC0DE
+#FFFFFF
+```
+
+Style:
+
+> Modern + soft + gradient + rounded + whitespace + playful + professional.
+
+Jadi ketika user pertama membuka website:
+
+```text
+              MADING INDONESIA
+
+   Temukan informasi terbaru
+   dari berbagai universitas
+   di Indonesia.
+
+          [ Jelajahi Universitas ]
+
+       [ Cari Informasi... ]
+```
+
+Brand platform menggunakan pink-purple.
+
+---
+
+# 11. Setelah Masuk Universitas
+
+Nah, ketika user membuka:
+
+```text
+/mading/itb
+```
+
+tampilannya bisa mulai mengambil identitas ITB.
+
+Contoh:
+
+```text
+┌─────────────────────────────────────┐
+│ ITB LOGO       ITB                   │
+│                                     │
+│ Informasi ITB                       │
+│ Event | Lomba | Pengumuman          │
+│                                     │
+└─────────────────────────────────────┘
+```
+
+Warna:
+
+```text
+Primary = warna ITB
+Secondary = warna ITB
+```
+
+Tetapi struktur/layout tetap sama.
+
+Jadi:
+
+> **Brand berbeda, design system tetap konsisten.**
+
+Ini penting supaya platform tidak berubah menjadi "website random" ketika pindah universitas.
+
+---
+
+# 12. Public User Flow
+
+Flow user biasa:
+
+```text
+Landing Page
+     │
+     ├── Search
+     │
+     ├── Universitas
+     │
+     └── Login/Register
+             │
+             ▼
+         Dashboard
+```
+
+Kalau user ingin mencari ITB:
+
+```text
+Search
+  ↓
+Institut Teknologi Bandung
+  ↓
+University Profile
+  ↓
+ ┌───────────────┐
+ │ Pengumuman    │
+ │ Event         │
+ │ Lomba         │
+ │ Beasiswa      │
+ └───────────────┘
+```
+
+---
+
+# 13. Landing Page yang Gue Rekomendasikan
+
+Berdasarkan palette dan referensi yang lu kasih, gue tidak akan membuat landing page seperti dashboard.
+
+Landing page harus lebih **editorial + modern**.
+
+Strukturnya:
+
+```text
+NAVBAR
+   │
+   ▼
+HERO
+   │
+   ▼
+SEARCH UNIVERSITAS
+   │
+   ▼
+FEATURED UNIVERSITIES
+   │
+   ▼
+LATEST INFORMATION
+   │
+   ▼
+EVENT / COMPETITION
+   │
+   ▼
+EXPLORE UNIVERSITIES
+   │
+   ▼
+HOW IT WORKS
+   │
+   ▼
+CTA
+   │
+   ▼
+FOOTER
+```
+
+---
+
+# 14. Hero
+
+Konsep visual:
+
+```text
+                    ✦
+       MADING
+       INDONESIA
+
+   Satu ruang untuk menemukan
+   informasi dari universitas
+   di seluruh Indonesia.
+
+ [ Cari universitas atau informasi... ]
+
+        Explore Universities
+```
+
+Background:
+
+```text
+#8E1EA2
+       ↓
+#C654C3
+       ↓
+#ED96D7
+       ↓
+#FFC0DE
+```
+
+Dengan abstract blobs/organic shapes.
+
+Jangan terlalu banyak ornamen.
+
+---
+
+# 15. Search Adalah Fitur Utama
+
+Karena ini platform mading, search harus mendapatkan perhatian besar.
+
+Contoh:
+
+```text
+┌──────────────────────────────────────────┐
+│ 🔍  Cari universitas, event, lomba...    │
+└──────────────────────────────────────────┘
+```
+
+Search bisa mencari:
+
+```text
+Universitas
+Informasi
+Event
+Lomba
+Beasiswa
+Pengumuman
+```
+
+Nanti secara backend bisa kita pikirkan apakah:
+
+```text
+global search
+```
+
+atau search per entity.
+
+---
+
+# 16. University Explorer
+
+Bagian:
+
+> **Temukan Universitas**
+
+Misalnya card:
+
+```text
+┌──────────────────────┐
+│      LOGO ITB        │
+│                      │
+│ Institut Teknologi   │
+│ Bandung              │
+│                      │
+│ Bandung              │
+│                      │
+│ [ Lihat Universitas ]│
+└──────────────────────┘
+```
+
+Card bisa menggunakan **accent color universitas**.
+
+Tetapi jangan seluruh card menjadi warna universitas.
+
+Lebih elegan:
+
+```text
+White Card
+    │
+    ├── logo
+    ├── nama
+    ├── kota
+    └── small accent line
+```
+
+---
+
+# 17. Latest Information
+
+Landing page juga menampilkan informasi terbaru.
+
+Misalnya:
+
+```text
+Informasi Terbaru
+
+┌────────────┐ ┌────────────┐ ┌────────────┐
+│ ITB        │ │ UI         │ │ UGM        │
+│ Lomba      │ │ Beasiswa   │ │ Seminar    │
+│             │ │            │ │            │
+│ 2 jam lalu │ │ 5 jam lalu │ │ 1 hari lalu│
+└────────────┘ └────────────┘ └────────────┘
+```
+
+Ini membuat landing page terasa **alive**.
+
+---
+
+# 18. Detail Informasi
+
+Ketika user membuka artikel:
+
+```text
+ITB
+Lomba
+
+Hackathon Nasional 2026
+
+[cover image]
+
+Tanggal:
+12–15 November 2026
+
+Lokasi:
+Bandung
+
+Deskripsi...
+```
+
+Di sidebar/mobile:
+
+```text
+Universitas
+Institut Teknologi Bandung
+
+Kategori
+Lomba
+
+Published
+05 October 2026
+```
+
+Dan tombol:
+
+```text
+← Kembali ke ITB
+```
+
+---
+
+# 19. Dashboard Super Admin
+
+Dashboard Super Admin tidak boleh terlalu playful.
+
+Lebih cocok:
+
+```text
+┌──────────────────────────────────────────────┐
+│ MADING INDONESIA              Super Admin    │
+├──────────────┬───────────────────────────────┤
+│ Dashboard    │                               │
+│ Universitas  │  Overview                     │
+│ Admin        │                               │
+│ Anggota      │  ┌────┐ ┌────┐ ┌────┐       │
+│ Konten       │  │ 34 │ │128 │ │ 21 │       │
+│ Approval     │  └────┘ └────┘ └────┘       │
+│ Kategori     │                               │
+│ Settings     │  Pending Approval             │
+│              │  ┌────────────────────────┐  │
+│              │  │ ITB | Lomba | Pending │  │
+│              │  └────────────────────────┘  │
+└──────────────┴───────────────────────────────┘
+```
+
+---
+
+# 20. Dashboard Admin Universitas
+
+Dashboard admin harus terasa seperti:
+
+> **"Ini dashboard universitas gue."**
+
+Misalnya ITB:
+
+```text
+┌──────────────────────────────────────────────┐
+│ ITB LOGO   Institut Teknologi Bandung       │
+├──────────────┬───────────────────────────────┤
+│ Dashboard    │                               │
+│ Konten       │  Selamat datang, Admin ITB   │
+│ Draft        │                               │
+│ Pending      │  [12] Published              │
+│ Published    │  [ 4] Pending                │
+│ Profile      │  [ 3] Draft                  │
+└──────────────┴───────────────────────────────┘
+```
+
+Dan accent color:
+
+```text
+ITB Primary Color
+```
+
+dipakai pada:
+
+* sidebar active
+* button
+* badge
+* chart accent
+* header accent
+* focus state
+
+---
+
+# 21. Struktur UX Besar
+
+Jadi kita punya **3 dunia UI**:
+
+### Public
+
+```text
+Global Brand
+Pink / Purple
+Modern
+Editorial
+```
+
+### Super Admin
+
+```text
+Platform Brand
+Professional
+Data-oriented
+Administrative
+```
+
+### University Admin
+
+```text
+University Brand
+Professional
+Dynamic Theme
+University-specific
+```
+
+Ini jauh lebih bagus daripada memaksa ketiganya menggunakan satu UI.
+
+---
+
+# 22. Design System
+
+Palette global:
+
+```text
+PRIMARY
+#8E1EA2
+
+SECONDARY
+#C654C3
+
+ACCENT
+#ED96D7
+
+SOFT
+#FFC0DE
+
+WHITE
+#FFFFFF
+```
+
+Saya juga sarankan menambahkan neutral system:
+
+```text
+TEXT
+#241A26
+
+TEXT SECONDARY
+#6F6571
+
+BACKGROUND
+#FAF8FA
+
+SURFACE
+#FFFFFF
+
+BORDER
+#E9E2EA
+
+SUCCESS
+#22C55E
+
+WARNING
+#F59E0B
+
+ERROR
+#EF4444
+
+INFO
+#3B82F6
+```
+
+Karena lima warna utama saja tidak cukup untuk membangun dashboard dan state UI.
+
+---
+
+# 23. Typography
+
+Gue rekomendasikan:
+
+### Primary font
+
+**Plus Jakarta Sans**
+
+Karena cocok dengan style:
+
+* modern
+* clean
+* friendly
+* Indonesian digital product
+* dashboard friendly
+
+Hierarchy:
+
+```text
+Display       56–72px
+H1            44–56px
+H2            32–40px
+H3            24–28px
+Body          16px
+Small         14px
+Caption       12px
+```
+
+Mobile:
+
+```text
+Display       40–48px
+H1            32–40px
+H2            26–32px
+Body          15–16px
+```
+
+---
+
+# 24. Bentuk Visual
+
+Gunakan:
+
+```text
+Border radius:
+
+Button       12px
+Input        12px
+Card         16px
+Large card   24px
+Modal        20px
+```
+
+Gradient:
+
+```css
+linear-gradient(
+    135deg,
+    #8E1EA2,
+    #C654C3,
+    #ED96D7
+)
+```
+
+Tapi **jangan semua komponen gradient**.
+
+Gradient hanya menjadi:
+
+> visual identity.
+
+---
+
+# 25. Prinsip UX Utama
+
+Website ini harus mengikuti:
+
+### 1. Discoverability
+
+User mudah menemukan universitas/informasi.
+
+### 2. Consistency
+
+Semua universitas punya struktur halaman yang konsisten.
+
+### 3. Scope isolation
+
+Admin hanya dapat mengelola universitasnya sendiri.
+
+### 4. Approval control
+
+Konten tidak langsung public.
+
+### 5. Dynamic branding
+
+Universitas punya identitas warna masing-masing.
+
+### 6. Responsive
+
+Desktop:
+
+```text
+1440px
+```
+
+Tablet:
+
+```text
+768px
+```
+
+Mobile:
+
+```text
+390px
+```
+
+### 7. Accessibility
+
+Kontras, keyboard navigation, focus state, ukuran tombol, alt text, dsb.
+
+---
+
+# 26. Gambaran Arsitektur Sistem
+
+Secara high-level:
+
+```text
+                         MADING INDONESIA
+                                │
+             ┌──────────────────┼──────────────────┐
+             │                  │                  │
+             ▼                  ▼                  ▼
+          PUBLIC            ADMIN AREA         AUTHENTICATION
+             │                  │                  │
+             │           ┌──────┴──────┐           │
+             │           │             │           │
+             │           ▼             ▼           │
+             │      SUPER ADMIN    UNIVERSITY      │
+             │                         ADMIN       │
+             │                                      │
+             └──────────────────────────────────────┘
+                                │
+                                ▼
+                           LARAVEL
+                                │
+             ┌──────────────────┼──────────────────┐
+             │                  │                  │
+             ▼                  ▼                  ▼
+          MySQL              Storage            Queue
+```
+
+---
+
+# 27. Gambaran Database
+
+Nanti ERD kita kemungkinan akan memiliki entity seperti:
+
+```text
+users
+roles
+universities
+university_admins
+categories
+posts
+post_categories
+post_statuses
+approvals
+media
+```
+
+Dan kemungkinan tambahan:
+
+```text
+events
+bookmarks
+notifications
+activity_logs
+```
+
+Tapi **jangan langsung kita finalkan tabelnya sekarang**.
+
+Kita harus menentukan business rules dulu supaya ERD-nya benar.
+
+---
+
+# 28. Relasi Inti
+
+Secara konseptual:
+
+```text
+USER
+ │
+ ├───────────────┐
+ │               │
+ ▼               ▼
+ROLE        UNIVERSITY
+ │               │
+ │               │
+ └──────┐   ┌────┘
+        ▼   ▼
+        ADMIN
+          │
+          ▼
+        POSTS
+          │
+          ▼
+       APPROVAL
+          │
+          ▼
+      SUPER ADMIN
+```
+
+Sedangkan:
+
+```text
+UNIVERSITY
+     │
+     ├── logo
+     ├── primary_color
+     ├── secondary_color
+     ├── description
+     ├── address
+     └── admin
+```
+
+---
+
+# 29. Stack yang Kita Kunci
+
+Dari requirement lu:
+
+```text
+Backend
+Laravel
+
+Frontend
+Blade
+Tailwind CSS
+
+Database
+MySQL
+
+Environment
+localhost
+
+Authentication
+Laravel authentication
+
+Authorization
+Role + university scope
+
+Storage
+Laravel Storage
+
+Frontend interaction
+Alpine.js
+```
+
+Untuk icon:
+
+```text
+Lucide
+```
+
+Dan kalau diperlukan nanti:
+
+```text
+Laravel Breeze / Fortify
+```
+
+untuk auth.
+
+---
+
+# 30. Yang Paling Penting: Jangan Langsung Coding
+
+Menurut gue workflow project ini sebaiknya:
+
+```text
+PHASE 01
+Product Definition
+       ↓
+PHASE 02
+User Flow
+       ↓
+PHASE 03
+Information Architecture
+       ↓
+PHASE 04
+ERD
+       ↓
+PHASE 05
+Database / SQL
+       ↓
+PHASE 06
+Laravel Architecture
+       ↓
+PHASE 07
+Folder Structure
+       ↓
+PHASE 08
+Authentication & Authorization
+       ↓
+PHASE 09
+Public Website
+       ↓
+PHASE 10
+Super Admin
+       ↓
+PHASE 11
+University Admin
+       ↓
+PHASE 12
+Approval System
+       ↓
+PHASE 13
+Dynamic University Theme
+       ↓
+PHASE 14
+Testing
+       ↓
+PHASE 15
+Polishing
+```
+
+Dan **DeepSeek nanti kita jadikan coding partner**, bukan tempat kita menentukan arsitektur dari nol.
+
+Kita kasih DeepSeek spesifikasi yang sudah matang:
+
+```text
+PROJECT SPECIFICATION
+        +
+DATABASE SPECIFICATION
+        +
+BUSINESS RULES
+        +
+FOLDER STRUCTURE
+        +
+CODING CONVENTION
+        +
+UI/UX SPECIFICATION
+        ↓
+      DEEPSEEK
+        ↓
+     LARAVEL CODE
+```
+
+Dengan cara ini kemungkinan AI menghasilkan:
+
+```text
+controller random
+migration tidak konsisten
+role permission bocor
+admin bisa akses universitas lain
+database redundant
+```
+
+jauh lebih kecil.
+
+---
+
+# 31. FULL PROMPT MASTER — Konsep Website
+
+Nah, kalau lu ingin memasukkan konsep ini ke AI/design generator/Figma AI atau nanti menjadi **master specification untuk DeepSeek**, prompt dasarnya bisa kita jadikan seperti ini:
+
+Buat sebuah platform web bernama **MADING INDONESIA**, yaitu platform digital mading dan pusat informasi antar-universitas di Indonesia.
+
+Platform ini memungkinkan berbagai universitas di Indonesia memiliki ruang informasi masing-masing dalam satu platform terpusat. Setiap universitas memiliki administrator sendiri, identitas visual sendiri, dan hanya dapat mengelola konten milik universitasnya. Pengguna umum dapat melihat seluruh informasi dari seluruh universitas.
+
+Gunakan konsep **multi-university / multi-tenant content platform** dengan tiga role utama:
+
+1. SUPER ADMIN
+2. ADMIN UNIVERSITAS
+3. ANGGOTA
+
+==================================================
+ROLE & AUTHORIZATION
+====================
+
+SUPER ADMIN:
+
+* Mengelola seluruh platform.
+* Membuat, mengubah, menghapus, mengaktifkan, dan menonaktifkan universitas.
+* Menentukan nama universitas.
+* Menentukan logo universitas.
+* Menentukan primary color dan secondary color universitas.
+* Membuat akun admin universitas.
+* Mengelola seluruh admin universitas.
+* Melihat dan mengelola seluruh konten.
+* Melakukan approval/rejection terhadap konten yang dibuat admin universitas.
+* Mengelola kategori konten.
+* Mengelola anggota.
+* Melihat statistik platform.
+* Memiliki akses global tanpa pembatasan university scope.
+
+ADMIN UNIVERSITAS:
+
+* Dibuat hanya oleh Super Admin.
+* Tidak memiliki halaman register.
+* Terhubung secara permanen dengan satu universitas.
+* Hanya dapat mengakses data universitasnya sendiri.
+* Dapat membuat, mengubah, menghapus, menyimpan draft, dan mengajukan konten.
+* Tidak dapat langsung mempublikasikan konten.
+* Setiap konten yang diajukan harus masuk ke status PENDING.
+* Konten harus diperiksa Super Admin sebelum dipublikasikan.
+* Tidak dapat mengakses atau mengubah data universitas lain.
+* Dashboard menggunakan identitas visual universitasnya.
+
+ANGGOTA:
+
+* Dapat melakukan register melalui halaman publik.
+* Tidak dapat mendaftarkan diri sebagai admin.
+* Dapat login.
+* Dapat melihat seluruh universitas.
+* Dapat mencari universitas.
+* Dapat melihat seluruh informasi publik.
+* Dapat membuka halaman profil masing-masing universitas.
+* Dapat membaca artikel, pengumuman, event, lomba, beasiswa, dan informasi lainnya.
+* Tidak memiliki hak CRUD konten.
+
+==================================================
+CONTENT APPROVAL WORKFLOW
+=========================
+
+Gunakan workflow:
+
+DRAFT
+→ PENDING
+→ APPROVED
+→ PUBLISHED
+
+Jika ditolak:
+
+PENDING
+→ REJECTED
+→ DRAFT
+→ PENDING
+
+Gunakan status:
+
+* draft
+* pending
+* approved
+* rejected
+* published
+* archived
+
+Admin universitas tidak boleh melewati proses approval.
+
+==================================================
+UNIVERSITY BRANDING
+===================
+
+Setiap universitas memiliki:
+
+* name
+* slug
+* logo
+* description
+* primary_color
+* secondary_color
+* city
+* address
+* website
+* email
+* phone
+* status
+
+Warna universitas disimpan di database.
+
+Ketika admin universitas login, sistem membaca konfigurasi universitas berdasarkan university_id dan menerapkan warna tersebut secara dinamis menggunakan CSS variables.
+
+Jangan hardcode warna universitas pada source code.
+
+Gunakan pendekatan:
+
+--university-primary
+--university-secondary
+
+Sehingga setiap universitas dapat memiliki warna berbeda tanpa membuat source code atau layout yang berbeda.
+
+Contoh:
+
+ITB:
+primary = warna ITB
+
+UI:
+primary = warna UI
+
+UGM:
+primary = warna UGM
+
+ITS:
+primary = warna ITS
+
+Struktur layout, typography, spacing, component system, dan UX tetap konsisten. Hanya branding/accent color yang berubah.
+
+==================================================
+GLOBAL BRANDING
+===============
+
+Landing page publik menggunakan identitas utama MADING INDONESIA.
+
+Primary palette:
+
+#8E1EA2
+#C654C3
+#ED96D7
+#FFC0DE
+#FFFFFF
+
+Gunakan tambahan neutral colors:
+
+Text:
+#241A26
+
+Secondary Text:
+#6F6571
+
+Background:
+#FAF8FA
+
+Border:
+#E9E2EA
+
+Success:
+#22C55E
+
+Warning:
+#F59E0B
+
+Error:
+#EF4444
+
+Info:
+#3B82F6
+
+Gunakan gradient sebagai identitas visual utama, tetapi jangan menggunakan gradient pada semua elemen.
+
+==================================================
+VISUAL STYLE
+============
+
+Gunakan style:
+
+* modern
+* soft
+* clean
+* premium
+* playful tetapi tetap profesional
+* editorial
+* rounded
+* spacious
+* minimal
+* gradient
+* organic abstract shapes
+* generous whitespace
+
+Gunakan visual hierarchy yang kuat.
+
+Gunakan whitespace sebagai bagian dari desain.
+
+Gunakan organic blob / curved abstract shape secara subtle sebagai decorative element.
+
+Hindari:
+
+* desain terlalu ramai
+* shadow berat
+* terlalu banyak gradient
+* terlalu banyak warna
+* border terlalu tebal
+* card terlalu kecil
+* typography terlalu kecil
+
+==================================================
+TYPOGRAPHY
+==========
+
+Gunakan font utama:
+
+Plus Jakarta Sans.
+
+Desktop:
+Display: 56–72px
+H1: 44–56px
+H2: 32–40px
+H3: 24–28px
+Body: 16px
+Small: 14px
+Caption: 12px
+
+Mobile:
+Display: 40–48px
+H1: 32–40px
+H2: 26–32px
+Body: 15–16px
+
+==================================================
+PUBLIC LANDING PAGE
+===================
+
+Landing page memiliki struktur:
+
+1. Navbar
+2. Hero
+3. Search
+4. Featured Universities
+5. Latest Information
+6. Events / Competitions
+7. Explore Universities
+8. How It Works
+9. CTA
+10. Footer
+
+Hero harus menjadi visual focal point.
+
+Hero menggunakan gradient pink-purple dan organic abstract shapes.
+
+Hero copy harus menjelaskan bahwa MADING INDONESIA adalah tempat untuk menemukan informasi dari berbagai universitas di Indonesia.
+
+Hero menyediakan primary CTA:
+
+"Jelajahi Universitas"
+
+dan search field:
+
+"Cari universitas, event, lomba, atau informasi..."
+
+==================================================
+UNIVERSITY EXPLORER
+===================
+
+Buat halaman untuk menjelajahi universitas.
+
+Fitur:
+
+* Search university
+* Filter berdasarkan kota/region jika tersedia
+* Search berdasarkan nama
+* University cards
+* Logo
+* Nama universitas
+* Kota
+* Short description
+* Accent color universitas
+* Button "Lihat Universitas"
+
+Card tetap menggunakan background putih dan accent color secara subtle.
+
+==================================================
+UNIVERSITY PUBLIC PAGE
+======================
+
+Setiap universitas memiliki public profile page.
+
+Contoh:
+
+/universitas/itb
+
+Halaman menampilkan:
+
+* Logo
+* Nama universitas
+* Deskripsi
+* Kota
+* Website
+* Contact information
+* Featured content
+* Latest information
+* Event
+* Competition
+* Announcement
+* Scholarship
+* Other categories
+
+Gunakan warna universitas sebagai accent color halaman.
+
+Layout tetap mengikuti design system global.
+
+==================================================
+CONTENT DETAIL
+==============
+
+Setiap konten memiliki:
+
+* title
+* slug
+* cover image
+* content body
+* category
+* university
+* author/admin
+* status
+* created date
+* published date
+
+Halaman detail harus memiliki:
+
+* breadcrumb
+* university identity
+* category badge
+* title
+* cover image
+* article content
+* metadata
+* related information
+* back navigation
+
+==================================================
+SUPER ADMIN DASHBOARD
+=====================
+
+Super Admin dashboard menggunakan global platform branding.
+
+Dashboard memiliki:
+
+Sidebar:
+
+* Dashboard
+* Universitas
+* Admin Universitas
+* Anggota
+* Konten
+* Approval
+* Kategori
+* Activity Log
+* Settings
+
+Dashboard overview:
+
+* Total Universitas
+* Total Admin
+* Total Anggota
+* Total Konten
+* Pending Approval
+* Published Content
+* Draft Content
+
+Gunakan table, statistic cards, filter, search, pagination, modal/form, badge status, dan confirmation dialog.
+
+==================================================
+UNIVERSITY ADMIN DASHBOARD
+==========================
+
+Admin dashboard menggunakan dynamic university branding.
+
+Sidebar:
+
+* Dashboard
+* Konten
+* Draft
+* Pending
+* Published
+* Profile Universitas
+* Account
+
+Dashboard menampilkan:
+
+* Total content
+* Draft
+* Pending approval
+* Published
+* Rejected
+* Recent content
+* Approval status
+
+Semua data harus otomatis dibatasi berdasarkan university_id admin.
+
+Admin ITB tidak boleh melihat data UI, UGM, ITS, atau universitas lainnya.
+
+==================================================
+RESPONSIVE DESIGN
+=================
+
+Desktop:
+1440px
+12-column grid
+max content width sekitar 1200px
+
+Tablet:
+768px
+8-column grid
+
+Mobile:
+390px
+4-column grid
+
+Gunakan responsive reflow, bukan hanya mengecilkan desktop.
+
+Desktop navigation berubah menjadi mobile menu.
+
+Cards dapat berubah dari horizontal/grid menjadi single column pada mobile.
+
+Dashboard sidebar dapat berubah menjadi mobile drawer.
+
+==================================================
+COMPONENT SYSTEM
+================
+
+Buat reusable component:
+
+Navbar
+Footer
+Button
+Input
+Search
+Select
+Dropdown
+Modal
+Badge
+Alert
+Toast
+Card
+University Card
+Content Card
+Statistic Card
+Table
+Pagination
+Breadcrumb
+Tabs
+Avatar
+Empty State
+Loading State
+Confirmation Dialog
+Sidebar
+Mobile Navigation
+Approval Status
+File Upload
+Image Preview
+
+Gunakan consistent spacing dan border radius.
+
+Button:
+12px radius
+
+Input:
+12px radius
+
+Card:
+16px radius
+
+Large card:
+24px radius
+
+Modal:
+20px radius
+
+==================================================
+TECHNOLOGY
+==========
+
+Backend:
+Laravel
+
+Frontend:
+Blade
+Tailwind CSS
+Alpine.js
+
+Database:
+MySQL
+
+Environment:
+localhost
+
+Authentication:
+Laravel authentication
+
+Authorization:
+Role-based authorization + university scope
+
+Storage:
+Laravel Storage
+
+Icons:
+Lucide Icons
+
+==================================================
+IMPORTANT BUSINESS RULES
+========================
+
+1. Hanya anggota yang dapat register melalui public registration.
+
+2. Admin universitas hanya dibuat oleh Super Admin.
+
+3. Super Admin memiliki akses global.
+
+4. Admin universitas hanya dapat mengakses universitas yang terhubung dengan akun tersebut.
+
+5. Admin universitas tidak dapat mengubah university_id miliknya melalui request client.
+
+6. Admin universitas tidak dapat mengakses endpoint universitas lain hanya dengan mengubah URL atau ID.
+
+7. Semua query admin universitas harus menggunakan university scope.
+
+8. Konten admin universitas harus melalui approval Super Admin.
+
+9. Konten PENDING tidak boleh tampil pada public website.
+
+10. Konten REJECTED tidak boleh tampil pada public website.
+
+11. Hanya konten PUBLISHED yang tampil pada public website.
+
+12. Warna universitas harus berasal dari database.
+
+13. Jangan hardcode university-specific color di Blade/Tailwind.
+
+14. Semua perubahan penting harus dapat dicatat dalam activity log.
+
+15. Semua form harus divalidasi server-side.
+
+16. Jangan hanya mengandalkan validasi frontend.
+
+17. Gunakan authorization policy/middleware Laravel.
+
+18. Hindari mass assignment vulnerability.
+
+19. Password harus disimpan menggunakan Laravel hashing.
+
+20. Gunakan CSRF protection.
+
+21. Gunakan pagination untuk data besar.
+
+22. Gunakan slug untuk public URL.
+
+23. Gunakan soft delete untuk data yang membutuhkan recovery.
+
+24. Public user tidak dapat mengakses dashboard admin.
+
+25. Admin tidak dapat mengakses dashboard Super Admin.
+
+==================================================
+DESIGN PHILOSOPHY
+=================
+
+Tujuan utama desain adalah membuat MADING INDONESIA terasa sebagai satu platform nasional, tetapi tetap memberikan identitas kepada setiap universitas.
+
+Prinsip utama:
+
+GLOBAL PLATFORM
++
+LOCAL UNIVERSITY IDENTITY
+
+Gunakan:
+
+* visual hierarchy
+* consistency
+* affordance
+* accessibility
+* responsive design
+* cognitive load reduction
+* clear information architecture
+* predictable navigation
+* reusable component system
+
+Desain harus terasa modern dan premium tetapi tetap mudah digunakan.
+
+Jangan membuat UI hanya untuk terlihat bagus. Setiap visual element harus mendukung fungsi dan user experience.
+
+---
+
+## 32. Dan setelah prompt ini, urutan kerja kita
+
+Menurut gue jangan langsung loncat ke SQL.
+
+Kita lanjut **bertahap dan gue akan bantu sampai siap dilempar ke DeepSeek**:
+
+### STEP 1 — Finalisasi Business Rules
+
+Kita kunci seluruh aturan:
+
+```text
+Siapa boleh apa?
+Siapa tidak boleh apa?
+Kapan konten dianggap published?
+Apa yang terjadi ketika ditolak?
+Bagaimana admin dibuat?
+Bagaimana universitas dinonaktifkan?
+Apa yang terjadi dengan kontennya?
+```
+
+### STEP 2 — User Flow
+
+Kita gambar:
+
+```text
+Guest
+ ↓
+Landing
+ ↓
+Search
+ ↓
+University
+ ↓
+Content
+```
+
+dan:
+
+```text
+Admin
+ ↓
+Login
+ ↓
+Dashboard
+ ↓
+Create
+ ↓
+Draft
+ ↓
+Submit
+ ↓
+Pending
+ ↓
+Super Admin
+ ↓
+Approve
+ ↓
+Published
+```
+
+### STEP 3 — **ERD Final**
+
+Baru kita tentukan:
+
+```text
+users
+roles
+universities
+posts
+categories
+approvals
+media
+activity_logs
+...
+```
+
+beserta:
+
+```text
+PK
+FK
+UNIQUE
+INDEX
+NULLABLE
+ENUM/status
+ON DELETE
+ON UPDATE
+```
+
+### STEP 4 — **Full MySQL SQL**
+
+Bukan sekadar struktur tabel, tapi sampai:
+
+* database
+* tables
+* indexes
+* foreign keys
+* constraints
+* seed data
+* super admin
+* contoh universitas
+* contoh admin
+* kategori
+* dummy content
+
+### STEP 5 — Laravel Structure
+
+Baru kita turunkan menjadi:
+
+```text
+app/
+├── Models/
+├── Http/
+│   ├── Controllers/
+│   ├── Requests/
+│   └── Middleware/
+├── Policies/
+├── Services/
+└── ...
+```
+
+plus:
+
+```text
+resources/
+├── views/
+│   ├── public/
+│   ├── admin/
+│   ├── super-admin/
+│   └── components/
+└── css/
+```
+
+### STEP 6 — Coding Prompt untuk DeepSeek
+
+Ini nanti yang paling penting.
+
+Kita bikin **prompt per modul**, bukan satu prompt raksasa seperti:
+
+> "DeepSeek, buatkan website Laravel."
+
+Contohnya:
+
+```text
+PROMPT 01
+Laravel Installation + Authentication
+
+PROMPT 02
+Database + Models
+
+PROMPT 03
+Role Authorization
+
+PROMPT 04
+University Management
+
+PROMPT 05
+Dynamic Theme
+
+PROMPT 06
+Content CRUD
+
+PROMPT 07
+Approval Workflow
+
+PROMPT 08
+Public Landing Page
+
+PROMPT 09
+University Public Page
+
+PROMPT 10
+Super Admin Dashboard
+
+PROMPT 11
+University Admin Dashboard
+
+PROMPT 12
+Testing + Security
+```
+
+Dengan begitu kalau DeepSeek error di satu modul, **nggak perlu menghancurkan seluruh project**.
+
+---
+
+### Satu keputusan arsitektur yang menurut gue harus kita pegang dari awal
+
+**Jangan membuat tiga aplikasi terpisah untuk Super Admin, Admin, dan Anggota.**
+
+Tetap:
+
+```text
+                 ONE LARAVEL APPLICATION
+                          │
+             ┌────────────┼────────────┐
+             ▼            ▼            ▼
+        PUBLIC AREA   ADMIN AREA   SUPER ADMIN
+             │            │            │
+             │       university_id     global
+             │            │
+             └────────────┴────────────┘
+                          │
+                         MySQL
+```
+
+Jadi satu aplikasi, satu database, satu codebase, tetapi **authorization + scope + UI** yang membedakan aksesnya.
+
+Dan konsep **dynamic university color** kita jadikan bagian resmi dari arsitektur, bukan sekadar kosmetik. Itu berarti dari database → middleware/controller → view → CSS variable → component, semuanya harus dirancang untuk mendukung theme universitas.
+
+**Next paling tepat: kita bedah dan finalisasi Business Rules + User Flow dulu, lalu gue bikin ERD yang benar-benar siap diturunkan menjadi full MySQL.**
