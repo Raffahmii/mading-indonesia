@@ -90,16 +90,19 @@ html {
 }
 
 /* ============================================================
-   HERO BACKGROUND — pakai background.jpg + animasi
+   HERO BACKGROUND — FULL WIDTH 1 LAYAR
    ============================================================ */
 
 .hero-bg {
     position: relative;
     overflow: hidden;
     isolation: isolate;
-    min-height: 93vh;
+    width: 100%;
+    min-height: 100vh;
     display: flex;
     align-items: center;
+    border-radius: 0;
+    margin: 0;
 }
 
 /* Layer 1: Gambar background dengan animasi Ken Burns */
@@ -124,14 +127,13 @@ html {
     inset: 0;
     background: linear-gradient(
         135deg,
-        rgba(142, 30, 162, 0.88) 0%,
-        rgba(198, 84, 195, 0.78) 50%,
-        rgba(237, 150, 215, 0.68) 100%
+        rgba(142, 30, 162, 0.85) 0%,
+        rgba(198, 84, 195, 0.75) 50%,
+        rgba(237, 150, 215, 0.65) 100%
     );
     z-index: 1;
 }
 
-/* Layer 3: Vignette + glow yang berdenyut */
 .hero-bg__overlay::after {
     content: '';
     position: absolute;
@@ -142,7 +144,7 @@ html {
     animation: pulse-glow 8s ease-in-out infinite;
 }
 
-/* Layer 4: Blob organik */
+/* Layer 3: Blob */
 .hero-bg__blobs {
     position: absolute;
     inset: 0;
@@ -151,7 +153,7 @@ html {
     pointer-events: none;
 }
 
-/* Konten di atas semua layer */
+/* Layer 4: Konten */
 .hero-bg__content {
     position: relative;
     z-index: 3;
@@ -222,7 +224,6 @@ html {
     transform: translateY(0);
 }
 
-/* Varian */
 .reveal-left  { transform: translateX(-50px); }
 .reveal-right { transform: translateX(50px); }
 .reveal-scale { transform: scale(0.92); }
@@ -233,7 +234,6 @@ html {
     transform: translate(0, 0) scale(1);
 }
 
-/* Delay */
 .reveal-d1 { transition-delay: 0.1s; }
 .reveal-d2 { transition-delay: 0.2s; }
 .reveal-d3 { transition-delay: 0.3s; }
@@ -242,7 +242,7 @@ html {
 .reveal-d6 { transition-delay: 0.6s; }
 
 /* ============================================================
-   FADE UP (untuk hero text)
+   FADE UP
    ============================================================ */
 
 @keyframes fade-up {
@@ -308,4 +308,3 @@ html {
         transform: none !important;
     }
 }
-

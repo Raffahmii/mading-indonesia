@@ -4,17 +4,14 @@
 
 @section('content')
 
-    {{-- Back --}}
-    <a href="{{ route('super-admin.universities.index') }}"
-       class="inline-flex items-center gap-1.5 text-sm text-ink-muted hover:text-ink mb-4">
+    <a href="{{ route('super-admin.universities.index') }}" class="inline-flex items-center gap-1.5 text-sm text-ink-muted hover:text-ink mb-4">
         <i data-lucide="arrow-left" class="w-4 h-4"></i>
         Kembali ke daftar
     </a>
 
-    {{-- Hero Card --}}
+    {{-- HERO --}}
     <div class="relative overflow-hidden rounded-2xl p-6 lg:p-8 mb-6 text-white"
          style="background: linear-gradient(135deg, {{ $university->primary_color }} 0%, {{ $university->secondary_color }} 100%);">
-
         <div class="absolute inset-0 pointer-events-none">
             <div class="blob blob-brand w-64 h-64 -top-16 -right-16 opacity-40 animate-blob"></div>
         </div>
@@ -45,13 +42,11 @@
             </div>
 
             <div class="flex items-center gap-2">
-                <a href="{{ route('super-admin.universities.edit', $university) }}"
-                   class="btn btn-sm bg-white/20 text-white hover:bg-white/30 backdrop-blur">
+                <a href="{{ route('super-admin.universities.edit', $university) }}" class="btn btn-sm bg-white/20 text-white hover:bg-white/30 backdrop-blur">
                     <i data-lucide="pencil" class="w-4 h-4"></i>
                     Edit
                 </a>
-                <a href="{{ route('public.universities.show', $university) }}" target="_blank"
-                   class="btn btn-sm bg-white text-gray-900 hover:bg-white/90">
+                <a href="{{ route('public.universities.show', $university) }}" target="_blank" class="btn btn-sm bg-white text-gray-900 hover:bg-white/90">
                     <i data-lucide="external-link" class="w-4 h-4"></i>
                     Lihat Publik
                 </a>
@@ -59,7 +54,7 @@
         </div>
     </div>
 
-    {{-- Stats --}}
+    {{-- STATS --}}
     <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 mb-6">
         <div class="card p-5">
             <div class="text-3xl font-bold text-ink mb-1">{{ $university->posts_count }}</div>
@@ -70,26 +65,24 @@
             <div class="text-sm text-ink-muted">Admin</div>
         </div>
         <div class="card p-5">
-            <div class="text-3xl font-bold text-ink mb-1">{{ $university->created_at->format('M Y') }}</div>
+            <div class="text-xl font-bold text-ink mb-1">{{ $university->created_at->format('M Y') }}</div>
             <div class="text-sm text-ink-muted">Bergabung</div>
         </div>
         <div class="card p-5">
-            <div class="text-3xl font-bold text-ink mb-1">{{ $university->slug }}</div>
+            <div class="text-lg font-bold text-ink mb-1 font-mono truncate">{{ $university->slug }}</div>
             <div class="text-sm text-ink-muted">Slug URL</div>
         </div>
     </div>
 
-    {{-- Info & Admins --}}
+    {{-- INFO & ADMINS --}}
     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-
-        {{-- Info --}}
         <div class="card p-6">
             <h3 class="font-bold text-lg mb-4 text-ink">Informasi</h3>
             <dl class="space-y-3 text-sm">
                 @if($university->email)
                     <div class="flex justify-between gap-4">
                         <dt class="text-ink-muted">Email</dt>
-                        <dd class="text-ink font-medium text-right">{{ $university->email }}</dd>
+                        <dd class="text-ink font-medium text-right break-all">{{ $university->email }}</dd>
                     </div>
                 @endif
                 @if($university->phone)
@@ -102,9 +95,7 @@
                     <div class="flex justify-between gap-4">
                         <dt class="text-ink-muted">Website</dt>
                         <dd class="text-right">
-                            <a href="{{ $university->website }}" target="_blank" class="text-brand-700 hover:underline font-medium">
-                                {{ $university->website }}
-                            </a>
+                            <a href="{{ $university->website }}" target="_blank" class="text-brand-700 hover:underline font-medium break-all">{{ $university->website }}</a>
                         </dd>
                     </div>
                 @endif
@@ -124,7 +115,6 @@
             @endif
         </div>
 
-        {{-- Admins --}}
         <div class="card p-6">
             <div class="flex items-center justify-between mb-4">
                 <h3 class="font-bold text-lg text-ink">Admin</h3>
@@ -136,8 +126,7 @@
 
             <div class="space-y-2">
                 @forelse($university->admins as $admin)
-                    <a href="{{ route('super-admin.admins.show', $admin) }}"
-                       class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-muted transition">
+                    <a href="{{ route('super-admin.admins.show', $admin) }}" class="flex items-center gap-3 p-3 rounded-xl hover:bg-surface-muted transition">
                         <div class="avatar avatar-sm bg-brand-100 text-brand-700 font-bold">
                             {{ strtoupper(substr($admin->name, 0, 1)) }}
                         </div>
@@ -152,22 +141,18 @@
                         @endif
                     </a>
                 @empty
-                    <div class="text-center py-8 text-ink-muted text-sm">
-                        Belum ada admin.
-                    </div>
+                    <div class="text-center py-8 text-ink-muted text-sm">Belum ada admin.</div>
                 @endforelse
             </div>
         </div>
-
     </div>
 
-    {{-- Recent Posts --}}
-    <div class="card">
+    {{-- RECENT POSTS --}}
+    <div class="card overflow-hidden">
         <div class="p-5 border-b border-surface-border flex items-center justify-between">
             <h3 class="font-bold text-lg text-ink">Konten Terbaru</h3>
             <a href="{{ route('super-admin.posts.index', ['university_id' => $university->id]) }}" class="link-arrow">
-                Lihat semua
-                <i data-lucide="arrow-right" class="w-4 h-4"></i>
+                Lihat semua <i data-lucide="arrow-right" class="w-4 h-4"></i>
             </a>
         </div>
 
@@ -185,25 +170,18 @@
                     @forelse($recentPosts as $post)
                         <tr>
                             <td>
-                                <a href="{{ route('super-admin.posts.show', $post) }}"
-                                   class="font-medium text-ink hover:text-brand-700 line-clamp-1">
+                                <a href="{{ route('super-admin.posts.show', $post) }}" class="font-medium text-ink hover:text-brand-700 line-clamp-1">
                                     {{ $post->title }}
                                 </a>
                             </td>
                             <td class="text-sm text-ink-muted">{{ $post->category->name }}</td>
                             <td>
-                                <span class="badge badge-{{ $post->status->color() }}">
-                                    {{ $post->status->label() }}
-                                </span>
+                                <span class="badge badge-{{ $post->status->color() }}">{{ $post->status->label() }}</span>
                             </td>
-                            <td class="text-right text-sm text-ink-muted">
-                                {{ $post->created_at->format('d M Y') }}
-                            </td>
+                            <td class="text-right text-sm text-ink-muted">{{ $post->created_at->format('d M Y') }}</td>
                         </tr>
                     @empty
-                        <tr>
-                            <td colspan="4" class="text-center py-8 text-ink-muted">Belum ada konten.</td>
-                        </tr>
+                        <tr><td colspan="4" class="text-center py-8 text-ink-muted">Belum ada konten.</td></tr>
                     @endforelse
                 </tbody>
             </table>

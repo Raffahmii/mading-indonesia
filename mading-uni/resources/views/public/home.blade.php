@@ -5,26 +5,26 @@
 @section('content')
 
     {{-- ============================================================
-         HERO SECTION
+         HERO SECTION — FULL WIDTH 1 LAYAR
          ============================================================ --}}
     <section id="beranda" class="hero-bg text-white">
 
-        {{-- Layer 1: Gambar background + animasi Ken Burns --}}
+        {{-- Layer 1: Background image --}}
         <div class="hero-bg__image"></div>
 
-        {{-- Layer 2: Overlay gradient pink-purple --}}
+        {{-- Layer 2: Overlay gradient --}}
         <div class="hero-bg__overlay"></div>
 
-        {{-- Layer 3: Blob organik --}}
+        {{-- Layer 3: Blob --}}
         <div class="hero-bg__blobs">
-            <div class="blob blob-brand w-[500px] h-[500px] -top-32 -left-32 opacity-25 animate-blob"></div>
-            <div class="blob blob-brand w-[400px] h-[400px] bottom-0 right-0 opacity-20 animate-blob-delay-2"></div>
-            <div class="blob blob-brand w-[350px] h-[350px] top-1/3 left-1/2 opacity-15 animate-blob-delay-4"></div>
+            <div class="blob blob-brand w-[400px] h-[400px] -top-32 -left-32 opacity-25 animate-blob"></div>
+            <div class="blob blob-brand w-[350px] h-[350px] bottom-0 right-0 opacity-20 animate-blob-delay-2"></div>
+            <div class="blob blob-brand w-[300px] h-[300px] top-1/3 left-1/2 opacity-15 animate-blob-delay-4"></div>
         </div>
 
         {{-- Layer 4: Konten --}}
         <div class="hero-bg__content">
-            <div class="max-w-7xl mx-auto px-4 lg:px-8 py-8 lg:py-16">
+            <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
                 <div class="max-w-3xl">
 
                     {{-- Badge --}}
@@ -77,9 +77,8 @@
         </div>
 
         {{-- Scroll indicator --}}
-        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 z-10 animate-bounce">
-            <a href="#universitas" class="flex flex-col items-center gap-1.5 text-white/70 hover:text-white transition">
-                <span class="text-xs font-medium tracking-wider uppercase">Scroll</span>
+        <div class="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 animate-bounce">
+            <a href="#universitas" class="flex flex-col items-center gap-1 text-white/70 hover:text-white transition">
                 <i data-lucide="chevron-down" class="w-5 h-5"></i>
             </a>
         </div>
@@ -90,7 +89,7 @@
          FEATURED UNIVERSITIES
          ============================================================ --}}
     @if($featuredUniversities->isNotEmpty())
-        <section id="universitas" class="max-w-7xl mx-auto px-4 lg:px-8 py-20 lg:py-28">
+        <section id="universitas" class="max-w-7xl mx-auto px-4 lg:px-8 py-20 lg:py-24">
             <div class="section-heading reveal">
                 <div>
                     <h2>Universitas Unggulan</h2>
@@ -117,7 +116,7 @@
          ============================================================ --}}
     @if($categories->isNotEmpty())
         <section id="kategori" class="bg-white border-y border-surface-border">
-            <div class="max-w-7xl mx-auto px-4 lg:px-8 py-20 lg:py-28">
+            <div class="max-w-7xl mx-auto px-4 lg:px-8 py-20 lg:py-24">
                 <div class="text-center mb-14 reveal">
                     <h2 class="text-3xl lg:text-4xl font-bold mb-3 text-ink">Jelajahi Kategori</h2>
                     <p class="text-ink-muted max-w-xl mx-auto">Pilih kategori yang kamu minati.</p>
@@ -143,7 +142,7 @@
          LATEST POSTS
          ============================================================ --}}
     @if($latestPosts->isNotEmpty())
-        <section id="informasi" class="max-w-7xl mx-auto px-4 lg:px-8 py-20 lg:py-28">
+        <section id="informasi" class="max-w-7xl mx-auto px-4 lg:px-8 py-20 lg:py-24">
             <div class="section-heading reveal">
                 <div>
                     <h2>Informasi Terbaru</h2>
@@ -170,7 +169,7 @@
          ============================================================ --}}
     @if($upcomingEvents->isNotEmpty())
         <section class="bg-white border-y border-surface-border">
-            <div class="max-w-7xl mx-auto px-4 lg:px-8 py-20 lg:py-28">
+            <div class="max-w-7xl mx-auto px-4 lg:px-8 py-20 lg:py-24">
                 <div class="section-heading reveal">
                     <div>
                         <h2>Event Mendatang</h2>
@@ -207,7 +206,7 @@
     {{-- ============================================================
          HOW IT WORKS
          ============================================================ --}}
-    <section class="max-w-7xl mx-auto px-4 lg:px-8 py-20 lg:py-28">
+    <section class="max-w-7xl mx-auto px-4 lg:px-8 py-20 lg:py-24">
         <div class="text-center mb-14 reveal">
             <h2 class="text-3xl lg:text-4xl font-bold mb-3 text-ink">Bagaimana Cara Kerjanya?</h2>
             <p class="text-ink-muted max-w-xl mx-auto">Tiga langkah mudah untuk mulai menemukan informasi kampus.</p>
@@ -240,7 +239,7 @@
     {{-- ============================================================
          CTA
          ============================================================ --}}
-    <section class="max-w-7xl mx-auto px-4 lg:px-8 pb-20 lg:pb-28">
+    <section class="max-w-7xl mx-auto px-4 lg:px-8 pb-20 lg:pb-24">
         <div class="reveal reveal-scale relative overflow-hidden rounded-3xl p-10 lg:p-16 text-white"
              style="background-image: linear-gradient(135deg, #8E1EA2 0%, #C654C3 50%, #ED96D7 100%);">
 

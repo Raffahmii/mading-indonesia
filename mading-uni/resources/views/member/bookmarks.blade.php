@@ -17,7 +17,7 @@
             </div>
             <h3 class="font-bold text-lg mb-2 text-ink">Belum ada favorit</h3>
             <p class="text-ink-muted text-sm mb-6 max-w-md mx-auto">
-                Mulai jelajahi konten dari kampus-kampus Indonesia dan simpan yang kamu suka.
+                Mulai jelajahi konten dan simpan yang kamu suka.
             </p>
             <a href="{{ route('public.universities.index') }}" class="btn btn-primary">
                 <i data-lucide="compass" class="w-4 h-4"></i>
@@ -31,7 +31,6 @@
                     <div class="relative group">
                         @include('public.partials.post-card', ['post' => $bookmark->post])
 
-                        {{-- Remove bookmark button --}}
                         <form method="POST"
                               action="{{ route('public.bookmarks.toggle', $bookmark->post) }}"
                               class="absolute top-3 right-3 opacity-0 group-hover:opacity-100 transition">
@@ -47,11 +46,8 @@
             @endforeach
         </div>
 
-        {{-- Pagination --}}
         @if($bookmarks->hasPages())
-            <div class="flex justify-center">
-                {{ $bookmarks->links() }}
-            </div>
+            <div class="flex justify-center">{{ $bookmarks->links() }}</div>
         @endif
     @endif
 

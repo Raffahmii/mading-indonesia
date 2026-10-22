@@ -4,7 +4,6 @@
 
 @section('content')
 
-    {{-- PAGE HEADER --}}
     <div class="page-header">
         <div>
             <h1>Universitas</h1>
@@ -16,15 +15,12 @@
         </a>
     </div>
 
-    {{-- Filter --}}
     <form method="GET" class="card p-4 mb-5">
         <div class="grid grid-cols-1 md:grid-cols-12 gap-3">
             <div class="md:col-span-5">
                 <div class="relative">
                     <i data-lucide="search" class="w-4 h-4 text-ink-soft absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
-                    <input type="text" name="q" value="{{ request('q') }}"
-                           placeholder="Cari nama atau kota..."
-                           class="input pl-10">
+                    <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama atau kota..." class="input pl-10">
                 </div>
             </div>
             <div class="md:col-span-3">
@@ -48,7 +44,6 @@
         </div>
     </form>
 
-    {{-- Table --}}
     <div class="card overflow-hidden">
         <div class="overflow-x-auto">
             <table class="table-modern">
@@ -107,17 +102,13 @@
                             </td>
                             <td>
                                 <div class="flex items-center justify-end gap-1">
-                                    <a href="{{ route('super-admin.universities.show', $university) }}"
-                                       class="btn-icon btn-icon-primary" title="Lihat">
+                                    <a href="{{ route('super-admin.universities.show', $university) }}" class="btn-icon btn-icon-primary" title="Lihat">
                                         <i data-lucide="eye" class="w-4 h-4"></i>
                                     </a>
-                                    <a href="{{ route('super-admin.universities.edit', $university) }}"
-                                       class="btn-icon btn-icon-blue" title="Edit">
+                                    <a href="{{ route('super-admin.universities.edit', $university) }}" class="btn-icon btn-icon-blue" title="Edit">
                                         <i data-lucide="pencil" class="w-4 h-4"></i>
                                     </a>
-                                    <form method="POST"
-                                          action="{{ route('super-admin.universities.toggle-status', $university) }}"
-                                          class="inline">
+                                    <form method="POST" action="{{ route('super-admin.universities.toggle-status', $university) }}" class="inline">
                                         @csrf
                                         <button type="submit" class="btn-icon btn-icon-yellow" title="Toggle Status">
                                             <i data-lucide="power" class="w-4 h-4"></i>
@@ -147,9 +138,7 @@
     </div>
 
     @if($universities->hasPages())
-        <div class="mt-6 flex justify-center">
-            {{ $universities->links() }}
-        </div>
+        <div class="mt-6 flex justify-center">{{ $universities->links() }}</div>
     @endif
 
 @endsection

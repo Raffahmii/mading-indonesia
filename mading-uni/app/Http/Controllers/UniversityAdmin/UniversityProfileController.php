@@ -38,12 +38,14 @@ class UniversityProfileController extends Controller
             'logo' => ['nullable', 'image', 'max:2048'],
         ]);
 
+        // Handle logo upload
         if ($request->hasFile('logo')) {
             $this->universityService->updateLogo($university, $request->file('logo'));
         }
 
-        // Admin universitas NGGAK boleh ubah slug & status
+        // Update data (kecuali file)
         unset($validated['logo']);
+        
         $this->universityService->update($university, $validated);
 
         return back()->with('success', 'Profil universitas berhasil diperbarui.');

@@ -4,9 +4,11 @@
 
 @section('content')
 
-    <div class="mb-5">
-        <h2 class="text-xl font-bold text-ink mb-1">Activity Log</h2>
-        <p class="text-ink-muted text-sm">Riwayat aktivitas pengguna di platform.</p>
+    <div class="page-header">
+        <div>
+            <h1>Activity Log</h1>
+            <p>Riwayat aktivitas sistem dan pengguna di platform.</p>
+        </div>
     </div>
 
     <div class="card overflow-hidden">
@@ -18,7 +20,7 @@
                         <th>User</th>
                         <th>Aksi</th>
                         <th>Subject</th>
-                        <th>IP</th>
+                        <th class="text-right">IP</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -40,21 +42,19 @@
                                 @endif
                             </td>
                             <td>
-                                <span class="badge badge-brand font-mono text-xs">{{ $log->action }}</span>
+                                <span class="badge badge-brand font-mono text-[10px]">{{ $log->action }}</span>
                             </td>
                             <td class="text-sm text-ink-muted">
                                 @if($log->subject_type)
-                                    {{ class_basename($log->subject_type) }}#{{ $log->subject_id }}
+                                    {{ class_basename($log->subject_type) }} <span class="text-xs">#{{ $log->subject_id }}</span>
                                 @else
                                     -
                                 @endif
                             </td>
-                            <td class="text-xs text-ink-muted font-mono">{{ $log->ip_address ?? '-' }}</td>
+                            <td class="text-right text-xs text-ink-muted font-mono">{{ $log->ip_address ?? '-' }}</td>
                         </tr>
                     @empty
-                        <tr>
-                            <td colspan="5" class="text-center py-12 text-ink-muted">Belum ada aktivitas.</td>
-                        </tr>
+                        <tr><td colspan="5" class="text-center py-16 text-ink-muted">Belum ada aktivitas.</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -62,7 +62,7 @@
     </div>
 
     @if($logs->hasPages())
-        <div class="mt-5 flex justify-center">{{ $logs->links() }}</div>
+        <div class="mt-6 flex justify-center">{{ $logs->links() }}</div>
     @endif
 
 @endsection

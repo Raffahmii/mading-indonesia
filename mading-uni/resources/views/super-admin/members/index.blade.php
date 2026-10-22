@@ -4,22 +4,25 @@
 
 @section('content')
 
-    <div class="mb-5">
-        <h2 class="text-xl font-bold text-ink mb-1">Anggota</h2>
-        <p class="text-ink-muted text-sm">Kelola semua anggota platform.</p>
+    <div class="page-header">
+        <div>
+            <h1>Anggota</h1>
+            <p>Kelola semua anggota platform.</p>
+        </div>
     </div>
 
-    {{-- Filter --}}
     <form method="GET" class="card p-4 mb-5">
         <div class="flex gap-3">
-            <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama atau email..." class="input flex-1">
-            <button type="submit" class="btn btn-primary">
+            <div class="relative flex-1">
+                <i data-lucide="search" class="w-4 h-4 text-ink-soft absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none"></i>
+                <input type="text" name="q" value="{{ request('q') }}" placeholder="Cari nama atau email..." class="input pl-10">
+            </div>
+            <button type="submit" class="btn btn-primary px-6">
                 <i data-lucide="search" class="w-4 h-4"></i>
             </button>
         </div>
     </form>
 
-    {{-- Table --}}
     <div class="card overflow-hidden">
         <div class="overflow-x-auto">
             <table class="table-modern">
@@ -29,7 +32,7 @@
                         <th>Email</th>
                         <th>Status</th>
                         <th>Bergabung</th>
-                        <th class="text-right">Aksi</th>
+                        <th class="text-right w-32">Aksi</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -54,15 +57,12 @@
                             <td class="text-sm text-ink-muted">{{ $member->created_at->format('d M Y') }}</td>
                             <td>
                                 <div class="flex items-center justify-end gap-1">
-                                    <a href="{{ route('super-admin.members.show', $member) }}"
-                                       class="p-2 rounded-lg text-ink-muted hover:text-brand-700 hover:bg-brand-50 transition">
+                                    <a href="{{ route('super-admin.members.show', $member) }}" class="btn-icon btn-icon-primary" title="Lihat">
                                         <i data-lucide="eye" class="w-4 h-4"></i>
                                     </a>
                                     <form method="POST" action="{{ route('super-admin.members.toggle-status', $member) }}" class="inline">
                                         @csrf
-                                        <button type="submit"
-                                                class="p-2 rounded-lg text-ink-muted hover:text-yellow-600 hover:bg-yellow-50 transition"
-                                                title="Toggle status">
+                                        <button type="submit" class="btn-icon btn-icon-yellow" title="Toggle Status">
                                             <i data-lucide="power" class="w-4 h-4"></i>
                                         </button>
                                     </form>
@@ -70,9 +70,7 @@
                             </td>
                         </tr>
                     @empty
-                        <tr>
-                            <td colspan="5" class="text-center py-12 text-ink-muted">Belum ada anggota.</td>
-                        </tr>
+                        <tr><td colspan="5" class="text-center py-16 text-ink-muted">Belum ada anggota.</td></tr>
                     @endforelse
                 </tbody>
             </table>
@@ -80,7 +78,7 @@
     </div>
 
     @if($members->hasPages())
-        <div class="mt-5 flex justify-center">{{ $members->links() }}</div>
+        <div class="mt-6 flex justify-center">{{ $members->links() }}</div>
     @endif
 
 @endsection

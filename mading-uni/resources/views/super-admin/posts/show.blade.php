@@ -5,10 +5,8 @@
 @section('content')
 
     <div class="max-w-4xl">
-        <a href="{{ route('super-admin.posts.index') }}"
-           class="inline-flex items-center gap-1.5 text-sm text-ink-muted hover:text-ink mb-4">
-            <i data-lucide="arrow-left" class="w-4 h-4"></i>
-            Kembali
+        <a href="{{ route('super-admin.posts.index') }}" class="inline-flex items-center gap-1.5 text-sm text-ink-muted hover:text-ink mb-4">
+            <i data-lucide="arrow-left" class="w-4 h-4"></i> Kembali
         </a>
 
         <div class="card overflow-hidden">
@@ -26,7 +24,7 @@
 
                 <h1 class="text-2xl lg:text-3xl font-bold text-ink mb-4">{{ $post->title }}</h1>
 
-                <div class="flex items-center gap-4 mb-6 pb-6 border-b border-surface-border text-sm">
+                <div class="flex items-center gap-4 mb-6 pb-6 border-b border-surface-border text-sm flex-wrap">
                     <div class="flex items-center gap-2">
                         <div class="w-8 h-8 rounded-full flex items-center justify-center text-white text-xs font-bold"
                              style="background: {{ $post->university->primary_color }};">
@@ -38,15 +36,13 @@
                         </div>
                     </div>
                     <div class="ml-auto text-xs text-ink-muted flex items-center gap-3">
-                        <span><i data-lucide="eye" class="w-3 h-3 inline"></i> {{ $post->view_count }}</span>
+                        <span class="flex items-center gap-1"><i data-lucide="eye" class="w-3.5 h-3.5"></i> {{ $post->view_count }}</span>
                         <span>{{ $post->created_at->format('d M Y') }}</span>
                     </div>
                 </div>
 
                 @if($post->excerpt)
-                    <p class="text-ink-muted leading-relaxed italic mb-6 pb-6 border-b border-surface-border">
-                        {{ $post->excerpt }}
-                    </p>
+                    <p class="text-ink-muted leading-relaxed italic mb-6 pb-6 border-b border-surface-border">{{ $post->excerpt }}</p>
                 @endif
 
                 <div class="prose-content">
